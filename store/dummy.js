@@ -4,21 +4,24 @@ const db = {
     ],
 };
 
-function list(tabla) {
+async function list(tabla) {
     return db[tabla];
 }
 
-function get(tabla, id) {
-    let col = list(tabla);
-    return col.filter(item => item.id === id)[0] || null;
+async function get(tabla, id) {
+    let col = await list(tabla);
+    return col.filter(item => item.id === parseInt(id))[0] || null;
 }
 
-function upsert(tabla, data) {
-    db[collection].push(data);
+async function upsert(tabla, data) {
+    db[tabla].push(data);
+    return await list(tabla);
 }
 
-function remove(tabla, id) {
-    return true;
+async function remove(tabla, id) {
+    const index = db[tabla].findIndex((item) => item.id === parseInt(id));
+    db[tabla].splice(index, 1);
+    return await list(tabla);
 }
 
 module.exports = {
